@@ -18,15 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HttpTargetApplication {
 
-    List<Map<String, Map<String, String>>> requestLists = new CopyOnWriteArrayList<>();
+    List<Map<String, Map<String, Object>>> requestLists = new CopyOnWriteArrayList<>();
 
 	public static void main(String[] args) {
 		SpringApplication.run(HttpTargetApplication.class, args);
 	}
 
     @RequestMapping("/cloudevents")
-    public String onEvents(@RequestHeader Map<String, String> headers, @RequestBody Map<String, String> event) {
-        Map<String, Map<String, String>> request = new HashMap<>();
+    public String onEvents(@RequestHeader Map<String, Object> headers, @RequestBody Map<String, Object> event) {
+        Map<String, Map<String, Object>> request = new HashMap<>();
         request.put("HttpHeaders", headers);
         request.put("HttpBody", event);
         requestLists.add(0, request);
