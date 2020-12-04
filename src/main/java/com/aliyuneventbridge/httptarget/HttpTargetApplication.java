@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
@@ -44,6 +45,30 @@ public class HttpTargetApplication {
             .setPrettyPrinting()
             .create();
         return gson.toJson(requestLists);
+    }
+
+
+    @RequestMapping("/smq_encode")
+    public String smq_encode(@RequestParam("id") String uuid) {
+	    return encodeUUID(Long.parseLong(uuid));
+    }
+
+    @RequestMapping("/smq_decode")
+    public String smq_decode(@RequestParam("id") String uuid) {
+        return decodeUUID(uuid);
+    }
+
+    public static String decodeUUID(String uuid) {
+        try {
+            long data = Long.parseLong(uuid, 36);
+            return String.valueOf(data);
+        } catch (Exception e) {
+            return uuid;
+        }
+    }
+
+    public static String encodeUUID(long uuid) {
+        return Long.toString(uuid, 36);
     }
 }
 
