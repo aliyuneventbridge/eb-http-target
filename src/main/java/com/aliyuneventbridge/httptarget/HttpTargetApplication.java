@@ -19,17 +19,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HttpTargetApplication {
 
-    List<Map<String, Map<String, Object>>> requestLists = new CopyOnWriteArrayList<>();
+    List<Map<String, Object>> requestLists = new CopyOnWriteArrayList<>();
 
 	public static void main(String[] args) {
 		SpringApplication.run(HttpTargetApplication.class, args);
 	}
 
     @RequestMapping("/cloudevents")
-    public String onEvents(@RequestHeader Map<String, Object> headers, @RequestBody Map<String, Object> event) {
-        Map<String, Map<String, Object>> request = new HashMap<>();
+    public String onEvents(@RequestHeader Map<String, Object> headers, @RequestBody String body) {
+        Map<String, Object> request = new HashMap<>();
+        try {
+            final Map<String, Object> bodyJsonMap = new Gson().fromJson(body, Map.class);
+            request.put("HttpBody", bodyJsonMap);
+        } catch (Throwable e) {
+            request.put("HttpBody", body);
+        }
         request.put("HttpHeaders", headers);
-        request.put("HttpBody", event);
         requestLists.add(0, request);
 
         if (requestLists.size() > 10) {
