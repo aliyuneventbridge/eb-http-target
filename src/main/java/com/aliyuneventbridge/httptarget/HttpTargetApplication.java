@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HttpTargetApplication {
 
-    List<Map<String, Object>> requestLists = new CopyOnWriteArrayList<>();
+    public static List<Map<String, Object>> requestLists = new CopyOnWriteArrayList<>();
 
 	public static void main(String[] args) {
 		SpringApplication.run(HttpTargetApplication.class, args);
