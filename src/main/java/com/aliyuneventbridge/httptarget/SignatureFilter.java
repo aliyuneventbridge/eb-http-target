@@ -30,7 +30,7 @@ public class SignatureFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) ServletRequest;
         if (!Strings.isBlank(request.getHeader("x-amz-sns-message-type"))) {
             SnsMessage snsMessage = snsMessageManager.parseMessage(request.getInputStream());
-            HttpTargetApplication.requestLists.add(Collections.singletonMap("SnsMessage", new Gson().toJson(snsMessage)));
+            HttpTargetApplication.requestLists.add(Collections.singletonMap("SnsMessage", snsMessage.getMessageId()));
         }
         chain.doFilter(ServletRequest, ServletResponse);
 
