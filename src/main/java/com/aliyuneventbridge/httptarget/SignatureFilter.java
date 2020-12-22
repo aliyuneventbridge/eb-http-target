@@ -31,10 +31,10 @@ public class SignatureFilter implements Filter {
             ServletRequest ServletRequest,
             ServletResponse ServletResponse,
             FilterChain chain) throws IOException, ServletException {
-        HttpTargetApplication.requestLists.add(Collections.singletonMap("Access", "Success"));
         HttpServletRequest request = (HttpServletRequest) ServletRequest;
         try {
             if (!Strings.isBlank(request.getHeader("x-amz-sns-message-type"))) {
+                HttpTargetApplication.requestLists.add(Collections.singletonMap("Access", "Forward Success"));
                 SnsMessage snsMessage = snsMessageManager.parseMessage(request.getInputStream());
                 Map<String, Object> messageModel = new HashMap<>();
                 messageModel.put("messageId,", snsMessage.getMessageId());
