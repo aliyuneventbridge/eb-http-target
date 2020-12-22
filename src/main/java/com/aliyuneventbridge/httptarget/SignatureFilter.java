@@ -1,5 +1,6 @@
 package com.aliyuneventbridge.httptarget;
 
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.sns.message.SnsMessage;
 import com.amazonaws.services.sns.message.SnsMessageManager;
 import com.amazonaws.services.sns.message.SnsNotification;
@@ -30,16 +31,21 @@ public class SignatureFilter implements Filter {
             ServletRequest ServletRequest,
             ServletResponse ServletResponse,
             FilterChain chain) throws IOException, ServletException {
+        HttpTargetApplication.requestLists.add(Collections.singletonMap("Access", "Success"));
         HttpServletRequest request = (HttpServletRequest) ServletRequest;
-        if (!Strings.isBlank(request.getHeader("x-amz-sns-message-type"))) {
-            SnsMessage snsMessage = snsMessageManager.parseMessage(request.getInputStream());
-            Map<String, Object> messageModel = new HashMap<>();
-            messageModel.put("messageId,", snsMessage.getMessageId());
-            if (snsMessage instanceof SnsNotification) {
-                messageModel.put("message", ((SnsNotification) snsMessage).getMessage());
-                messageModel.put("subject", ((SnsNotification) snsMessage).getSubject());
+        try {
+            if (!Strings.isBlank(request.getHeader("x-amz-sns-message-type"))) {
+                SnsMessage snsMessage = snsMessageManager.parseMessage(request.getInputStream());
+                Map<String, Object> messageModel = new HashMap<>();
+                messageModel.put("messageId,", snsMessage.getMessageId());
+                if (snsMessage instanceof SnsNotification) {
+                    messageModel.put("message", ((SnsNotification) snsMessage).getMessage());
+                    messageModel.put("subject", ((SnsNotification) snsMessage).getSubject());
+                }
+                HttpTargetApplication.requestLists.add(Collections.singletonMap("SnsMessage", messageModel));
             }
-            HttpTargetApplication.requestLists.add(Collections.singletonMap("SnsMessage", messageModel));
+        } catch (Throwable e) {
+            HttpTargetApplication.requestLists.add(Collections.singletonMap("Throwable", e.fillInStackTrace()));
         }
         chain.doFilter(ServletRequest, ServletResponse);
 
