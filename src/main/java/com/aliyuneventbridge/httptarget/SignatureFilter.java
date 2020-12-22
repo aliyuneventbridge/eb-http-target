@@ -2,6 +2,7 @@ package com.aliyuneventbridge.httptarget;
 
 import com.amazonaws.services.sns.message.SnsMessage;
 import com.amazonaws.services.sns.message.SnsMessageManager;
+import com.amazonaws.services.sns.message.SnsNotification;
 import com.google.gson.Gson;
 import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
@@ -13,6 +14,8 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 @Order(1)
@@ -30,7 +33,13 @@ public class SignatureFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) ServletRequest;
         if (!Strings.isBlank(request.getHeader("x-amz-sns-message-type"))) {
             SnsMessage snsMessage = snsMessageManager.parseMessage(request.getInputStream());
-            HttpTargetApplication.requestLists.add(Collections.singletonMap("SnsMessage", snsMessage.getMessageId()));
+            Map<String, Object> messageModel = new HashMap<>();
+            messageModel.put("messageId,", snsMessage.getMessageId());
+            if (snsMessage instanceof SnsNotification) {
+                messageModel.put("message", ((SnsNotification) snsMessage).getMessage());
+                messageModel.put("subject", ((SnsNotification) snsMessage).getSubject());
+            }
+            HttpTargetApplication.requestLists.add(Collections.singletonMap("SnsMessage", messageModel));
         }
         chain.doFilter(ServletRequest, ServletResponse);
 
