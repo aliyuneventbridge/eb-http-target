@@ -4,6 +4,7 @@ import com.amazonaws.SdkClientException;
 import com.amazonaws.services.sns.message.SnsMessage;
 import com.amazonaws.services.sns.message.SnsMessageManager;
 import com.amazonaws.services.sns.message.SnsNotification;
+import com.amazonaws.services.sns.message.SnsSubscriptionConfirmation;
 import com.google.gson.Gson;
 import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
@@ -41,6 +42,8 @@ public class SignatureFilter implements Filter {
                 if (snsMessage instanceof SnsNotification) {
                     messageModel.put("message", ((SnsNotification) snsMessage).getMessage());
                     messageModel.put("subject", ((SnsNotification) snsMessage).getSubject());
+                }else if(snsMessage instanceof SnsSubscriptionConfirmation){
+                    messageModel.put("subscribeUrl", ((SnsSubscriptionConfirmation) snsMessage).getSubscribeUrl());
                 }
                 HttpTargetApplication.requestLists.add(Collections.singletonMap("SnsMessage", messageModel));
             }
