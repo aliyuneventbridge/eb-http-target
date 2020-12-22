@@ -31,8 +31,10 @@ public class SignatureFilter implements Filter {
             FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) ServletRequest;
         try {
-            if (!Strings.isBlank(request.getHeader("x-amz-sns-message-type"))) {
+            if(request.getRequestURI().contains("cloudevents")){
                 HttpTargetApplication.requestLists.add(Collections.singletonMap("Access", "Forward Success"));
+            }
+            if (!Strings.isBlank(request.getHeader("x-amz-sns-message-type"))) {
                 SnsMessage snsMessage = snsMessageManager.parseMessage(request.getInputStream());
                 Map<String, Object> messageModel = new HashMap<>();
                 messageModel.put("messageId,", snsMessage.getMessageId());
