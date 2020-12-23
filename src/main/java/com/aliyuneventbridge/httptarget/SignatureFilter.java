@@ -1,11 +1,7 @@
 package com.aliyuneventbridge.httptarget;
 
-import com.amazonaws.SdkClientException;
 import com.amazonaws.services.sns.message.*;
-import com.google.gson.Gson;
 import org.apache.logging.log4j.util.Strings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -20,9 +16,7 @@ import java.util.Map;
 @Order(1)
 public class SignatureFilter implements Filter {
 
-    private static final Logger log = LoggerFactory.getLogger(SignatureFilter.class);
-
-    SnsMessageManager snsMessageManager = new SnsMessageManager("us-east-2");
+    private SnsMessageManager snsMessageManager = new SnsMessageManager("us-east-2");
 
     @Override
     public void doFilter(
