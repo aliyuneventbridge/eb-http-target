@@ -45,7 +45,8 @@ public class SignatureFilter implements Filter {
         //    System.out.println(e.fillInStackTrace());
         //    HttpTargetApplication.requestLists.add(Collections.singletonMap("Throwable", e.fillInStackTrace()));
         //}
-
+        logger.error("eb access");
+        System.out.println("eb access");
         try {
             chain.doFilter(ServletRequest, ServletResponse);
         } catch (Throwable e) {
