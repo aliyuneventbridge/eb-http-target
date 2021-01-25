@@ -52,6 +52,7 @@ public class SignatureVerify {
         System.out.println("decryptSecret:" + decryptSecret);
         System.out.println("stringToSign:" + stringToSign);
         String combaredSignature = signByHmacSHA1(stringToSign, decryptSecret);
+        System.out.println("signature:" + combaredSignature);
         if (combaredSignature.equals(sign)) {
             return Boolean.TRUE;
         } else {

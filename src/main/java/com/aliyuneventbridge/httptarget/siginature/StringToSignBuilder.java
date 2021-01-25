@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;
+import org.apache.logging.log4j.util.Strings;
 
 public class StringToSignBuilder {
 
@@ -41,8 +42,10 @@ public class StringToSignBuilder {
             headerMap.get(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_VERSION)));
         headers.add(new BasicHeader(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_URL,
             headerMap.get(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_URL)));
-        headers.add(new BasicHeader(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_TOKEN,
-            headerMap.get(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_TOKEN)));
+        if (!Strings.isNotBlank(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_TOKEN)) {
+            headers.add(new BasicHeader(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_TOKEN,
+                headerMap.get(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_TOKEN)));
+        }
         return headers;
     }
 
