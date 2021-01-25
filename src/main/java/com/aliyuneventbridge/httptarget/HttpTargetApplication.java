@@ -54,12 +54,12 @@ public class HttpTargetApplication {
                 request.put("HttpBody", bodyJsonMap);
                 request.put("HttpHeaders", headers);
                 requestLists.add(0, request);
-
                 if (requestLists.size() > 10) {
                     requestLists.remove(requestLists.size() - 1);
                 }
             }
         } catch (Throwable e) {
+            logger.error("cloudevents failed", e);
             request.put("HttpBody", body);
         }
         return "OK";

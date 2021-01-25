@@ -17,6 +17,8 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.apache.http.Header;
 import org.apache.logging.log4j.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.aliyuneventbridge.httptarget.siginature.EBConstants.DEFAULT_CHARSET;
 import static com.aliyuneventbridge.httptarget.siginature.EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE;
@@ -27,6 +29,8 @@ import static com.aliyuneventbridge.httptarget.siginature.EBConstants.HEADER_X_E
 import static com.aliyuneventbridge.httptarget.siginature.EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_VERSION;
 
 public class SignatureVerify {
+
+    private static Logger logger = LoggerFactory.getLogger(SignatureVerify.class);
 
     /**
      * Verify the request signature
@@ -47,12 +51,13 @@ public class SignatureVerify {
 
         PublicKey publicKey = PublicKeyBuilder.buildPublicKey(headerMap.get(HEADER_X_EVENTBRIDGE_SIGNATURE_URL));
         String decryptSecret = decrypt(publicKey, encryptedSecret);
+        logger.error("x-eventbridge-signature-url:" + headerMap.get(HEADER_X_EVENTBRIDGE_SIGNATURE_URL));
 
         String stringToSign = StringToSignBuilder.defaultStringToSign(urlWithQueryString, headerMap, body);
-        System.out.println("decryptSecret:" + decryptSecret);
-        System.out.println("stringToSign:" + stringToSign);
+        logger.error("decryptSecret:" + decryptSecret);
+        logger.error("stringToSign:" + stringToSign);
         String combaredSignature = signByHmacSHA1(stringToSign, decryptSecret);
-        System.out.println("signature:" + combaredSignature);
+        logger.error("signature:" + combaredSignature);
         if (combaredSignature.equals(sign)) {
             return Boolean.TRUE;
         } else {
@@ -66,12 +71,11 @@ public class SignatureVerify {
         }
         if (!headerMap.containsKey(HEADER_X_EVENTBRIDGE_SIGNATURE_TIMESTAMP) || !headerMap.containsKey(
             HEADER_X_EVENTBRIDGE_SIGNATURE_METHOD) || !headerMap.containsKey(HEADER_X_EVENTBRIDGE_SIGNATURE_VERSION)
-            || !headerMap.containsKey(HEADER_X_EVENTBRIDGE_SIGNATURE_URL)){
+            || !headerMap.containsKey(HEADER_X_EVENTBRIDGE_SIGNATURE_URL)) {
             return Boolean.FALSE;
         }
         return Boolean.TRUE;
     }
-
 
     /**
      * convert header list to header map
