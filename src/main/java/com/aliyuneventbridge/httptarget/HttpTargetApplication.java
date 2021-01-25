@@ -50,13 +50,13 @@ public class HttpTargetApplication {
             boolean isLegal = SignatureVerify.verify(buildUrlWithQueryString(httpServletRequest),
                 getHeaders(httpServletRequest), body.getBytes());
             if (isLegal) {
-                final Map<String, Object> bodyJsonMap = new Gson().fromJson(body, Map.class);
-                request.put("HttpBody", bodyJsonMap);
-                request.put("HttpHeaders", headers);
-                requestLists.add(0, request);
-                if (requestLists.size() > 10) {
-                    requestLists.remove(requestLists.size() - 1);
-                }
+                //final Map<String, Object> bodyJsonMap = new Gson().fromJson(body, Map.class);
+                //request.put("HttpBody", bodyJsonMap);
+                //request.put("HttpHeaders", headers);
+                //requestLists.add(0, request);
+                //if (requestLists.size() > 10) {
+                //    requestLists.remove(requestLists.size() - 1);
+                //}
                 logger.error("Signature verify success");
             } else {
                 logger.error("Signature verify failed");

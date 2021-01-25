@@ -43,8 +43,26 @@ public class PublicKeyBuilder {
             if (response.getStatusLine()
                 .getStatusCode() / 100 == 2) {
                 try {
-                    return new String(toByteArray(response.getEntity()
-                        .getContent()), Charset.forName("UTF-8"));
+                    String publicCerl = "-----BEGIN CERTIFICATE-----\n"
+                        + "MIICwzCCAiwCCQC++87W+yaNEDANBgkqhkiG9w0BAQUFADCBpTELMAkGA1UEBhMC\n"
+                        + "Q04xETAPBgNVBAgMCFpoZUppYW5nMREwDwYDVQQHDAhIYW5nWmhvdTEPMA0GA1UE\n"
+                        + "CgwGQWxpeXVuMRMwEQYDVQQLDApNaWRkbGV3YXJlMR8wHQYDVQQDDBZldmVudGJy\n"
+                        + "aWRnZS5hbGl5dW4uY29tMSkwJwYJKoZIhvcNAQkBFhpqaW5nbHVvLnNsQGFsaWJh\n"
+                        + "YmEtaW5jLmNvbTAeFw0yMTAxMjExMzIwMzdaFw0zMTAxMTkxMzIwMzdaMIGlMQsw\n"
+                        + "CQYDVQQGEwJDTjERMA8GA1UECAwIWmhlSmlhbmcxETAPBgNVBAcMCEhhbmdaaG91\n"
+                        + "MQ8wDQYDVQQKDAZBbGl5dW4xEzARBgNVBAsMCk1pZGRsZXdhcmUxHzAdBgNVBAMM\n"
+                        + "FmV2ZW50YnJpZGdlLmFsaXl1bi5jb20xKTAnBgkqhkiG9w0BCQEWGmppbmdsdW8u\n"
+                        + "c2xAYWxpYmFiYS1pbmMuY29tMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDG\n"
+                        + "HZD42MuTIMsyAilDiLCq73emBwQ5eYWzY+lDG9JCwZPnI73hgq/JG1r+7gurn7mH\n"
+                        + "oSgzmavRcJQzu8mAZHPBaneohetL5i4lmsPWV/Ef869OmBZi+j0rjUgJmTjAV9Vr\n"
+                        + "qTppK/rO8gedBSIiymEWpR1rgzqYZvrMrFrcFy0oqwIDAQABMA0GCSqGSIb3DQEB\n"
+                        + "BQUAA4GBAE8FQjH6SDM2CMU4RBWuI2/jqpDJtg7qc30aasVRyjlbxhSGBkzmAYnM\n"
+                        + "xwyJSfQImDs/n35uuYE3pKH0bLRlOQu9Z0TlumSRlhin+YXBfPNScoyX8upNfLgr\n"
+                        + "peHK7YGGpAbJH8Qh3GbOueSD1wT/MWA15QfQABHgtrYl5Am+VNNc\n" + "-----END CERTIFICATE-----";
+                        //new String(toByteArray(response.getEntity()
+                        //.getContent()), Charset.forName("UTF-8"));
+                    System.out.println("publicCerl:" + publicCerl);
+                    return publicCerl;
                 } finally {
                     response.getEntity()
                         .getContent()
