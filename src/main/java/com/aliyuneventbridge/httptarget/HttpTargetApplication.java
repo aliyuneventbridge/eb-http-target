@@ -29,7 +29,7 @@ public class HttpTargetApplication {
 	}
 
     @RequestMapping("/cloudevents")
-    public String onEvents(@RequestHeader Map<String, Object> headers, @RequestBody String body) {
+    public String onEvents(@RequestBody String body) {
         Map<String, Object> request = new HashMap<>();
         try {
             final Map<String, Object> bodyJsonMap = new Gson().fromJson(body, Map.class);
@@ -38,7 +38,7 @@ public class HttpTargetApplication {
             logger.error("cloudevents", e);
             request.put("HttpBody", body);
         }
-        request.put("HttpHeaders", headers);
+        //request.put("HttpHeaders", headers);
         requestLists.add(0, request);
 
         if (requestLists.size() > 10) {
