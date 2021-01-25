@@ -57,6 +57,9 @@ public class HttpTargetApplication {
                 if (requestLists.size() > 10) {
                     requestLists.remove(requestLists.size() - 1);
                 }
+                logger.error("Signature verify success");
+            } else {
+                logger.error("Signature verify failed");
             }
         } catch (Throwable e) {
             logger.error("cloudevents failed", e);
