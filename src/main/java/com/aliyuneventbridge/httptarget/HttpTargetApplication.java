@@ -1,19 +1,15 @@
 package com.aliyuneventbridge.httptarget;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import javax.servlet.http.HttpServletRequest;
 
 import com.aliyuneventbridge.httptarget.siginature.SignatureVerify;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;
 import org.apache.logging.log4j.util.Strings;
@@ -45,25 +41,16 @@ public class HttpTargetApplication {
 
     @RequestMapping("/cloudevents")
     public String onEvents(@RequestHeader Map<String, Object> headers, @RequestBody String body) {
-        Map<String, Object> request = new HashMap<>();
         try {
             boolean isLegal = SignatureVerify.verify(buildUrlWithQueryString(httpServletRequest),
                 getHeaders(httpServletRequest), body.getBytes());
             if (isLegal) {
-                //final Map<String, Object> bodyJsonMap = new Gson().fromJson(body, Map.class);
-                //request.put("HttpBody", bodyJsonMap);
-                //request.put("HttpHeaders", headers);
-                //requestLists.add(0, request);
-                //if (requestLists.size() > 10) {
-                //    requestLists.remove(requestLists.size() - 1);
-                //}
                 logger.error("Signature verify success");
             } else {
                 logger.error("Signature verify failed");
             }
         } catch (Throwable e) {
             logger.error("cloudevents failed", e);
-            request.put("HttpBody", body);
         }
         return "OK";
     }

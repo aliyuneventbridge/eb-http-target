@@ -51,13 +51,8 @@ public class SignatureVerify {
 
         PublicKey publicKey = PublicKeyBuilder.buildPublicKey(headerMap.get(HEADER_X_EVENTBRIDGE_SIGNATURE_URL));
         String decryptSecret = decrypt(publicKey, encryptedSecret);
-        logger.error("x-eventbridge-signature-url:" + headerMap.get(HEADER_X_EVENTBRIDGE_SIGNATURE_URL));
-
         String stringToSign = StringToSignBuilder.defaultStringToSign(urlWithQueryString, headerMap, body);
-        logger.error("decryptSecret:" + decryptSecret);
-        logger.error("stringToSign:" + stringToSign);
         String combaredSignature = signByHmacSHA1(stringToSign, decryptSecret);
-        logger.error("signature:" + combaredSignature);
         if (combaredSignature.equals(sign)) {
             return Boolean.TRUE;
         } else {
