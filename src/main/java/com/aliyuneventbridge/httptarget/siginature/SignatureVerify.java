@@ -1,32 +1,22 @@
 package com.aliyuneventbridge.httptarget.siginature;
 
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.Mac;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
-
 import org.apache.http.Header;
 import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.aliyuneventbridge.httptarget.siginature.EBConstants.DEFAULT_CHARSET;
-import static com.aliyuneventbridge.httptarget.siginature.EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE;
-import static com.aliyuneventbridge.httptarget.siginature.EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_METHOD;
-import static com.aliyuneventbridge.httptarget.siginature.EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_SECRET;
-import static com.aliyuneventbridge.httptarget.siginature.EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_TIMESTAMP;
-import static com.aliyuneventbridge.httptarget.siginature.EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_URL;
-import static com.aliyuneventbridge.httptarget.siginature.EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_VERSION;
+import javax.crypto.*;
+import javax.xml.bind.DatatypeConverter;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.Signature;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static com.aliyuneventbridge.httptarget.siginature.EBConstants.*;
 
 public class SignatureVerify {
 
@@ -46,18 +36,11 @@ public class SignatureVerify {
         if (!checkParam(urlWithQueryString, headerMap)) {
             return Boolean.FALSE;
         }
-        String encryptedSecret = headerMap.get(HEADER_X_EVENTBRIDGE_SIGNATURE_SECRET);
-        String sign = headerMap.get(HEADER_X_EVENTBRIDGE_SIGNATURE);
+        String sign = headerMap.get(HEADER_X_EVENTBRIDGE_SIGNATURE_V2);
 
         PublicKey publicKey = PublicKeyBuilder.buildPublicKey(headerMap.get(HEADER_X_EVENTBRIDGE_SIGNATURE_URL));
-        String decryptSecret = decrypt(publicKey, encryptedSecret);
-        String stringToSign = StringToSignBuilder.defaultStringToSign(urlWithQueryString, headerMap, body);
-        String combaredSignature = signByHmacSHA1(stringToSign, decryptSecret);
-        if (combaredSignature.equals(sign)) {
-            return Boolean.TRUE;
-        } else {
-            return Boolean.FALSE;
-        }
+        String stringToSign = StringToSignBuilder.defaultStringToSignV2(urlWithQueryString, headerMap, body);
+        return verifySignatureBySHA256withRSA(stringToSign, publicKey, sign);
     }
 
     private static boolean checkParam(String urlWithQueryString, Map<String, String> headerMap) {
@@ -65,7 +48,7 @@ public class SignatureVerify {
             return Boolean.FALSE;
         }
         if (!headerMap.containsKey(HEADER_X_EVENTBRIDGE_SIGNATURE_TIMESTAMP) || !headerMap.containsKey(
-            HEADER_X_EVENTBRIDGE_SIGNATURE_METHOD) || !headerMap.containsKey(HEADER_X_EVENTBRIDGE_SIGNATURE_VERSION)
+            HEADER_X_EVENTBRIDGE_HASH_METHOD) || !headerMap.containsKey(HEADER_X_EVENTBRIDGE_SIGNATURE_VERSION)
             || !headerMap.containsKey(HEADER_X_EVENTBRIDGE_SIGNATURE_URL)) {
             return Boolean.FALSE;
         }
@@ -117,26 +100,14 @@ public class SignatureVerify {
         return new String(decryptCode);
     }
 
-    /**
-     * sign from secret
-     *
-     * @param content
-     * @param secret
-     *
-     * @return
-     *
-     * @throws Exception
-     */
-    public static String signByHmacSHA1(String content, String secret) {
-        try {
-            byte[] data = secret.getBytes(DEFAULT_CHARSET);
-            SecretKey secretKey = new SecretKeySpec(data, "HmacSHA1");
-            Mac mac = Mac.getInstance("HmacSHA1");
-            mac.init(secretKey);
-            byte[] text = content.getBytes(DEFAULT_CHARSET);
-            return DatatypeConverter.printBase64Binary(mac.doFinal(text));
-        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
-            throw new RuntimeException("Encrypt content with secret failed. which content is " + content, e);
+    public static Boolean verifySignatureBySHA256withRSA(String stringToSign, PublicKey publicKey, String signature) {
+        try{
+            Signature verify = Signature.getInstance("SHA256withRSA");
+            verify.initVerify(publicKey);
+            verify.update(stringToSign.getBytes());
+            return verify.verify(Base64.getDecoder().decode(signature));
+        } catch (Exception e){
+            throw new RuntimeException("Verify signature failed. which stringToSign is " + stringToSign, e);
         }
     }
 }

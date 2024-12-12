@@ -37,7 +37,14 @@ public class EBConstants {
      */
     public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 
-
+    /**
+     * the current timestamp, If the receiver exceeds 60 seconds, it is considered expired.
+     */
+    public static String HEADER_X_EVENTBRIDGE_SIGNATURE_V2 = "x-eventbridge-signature-v2";
+    /**
+     * the current timestamp, If the receiver exceeds 60 seconds, it is considered expired.
+     */
+    public static String HEADER_X_EVENTBRIDGE_HASH_METHOD = "x-eventbridge-hash-method";
     /**
      * the current timestamp, If the receiver exceeds 60 seconds, it is considered expired.
      */
