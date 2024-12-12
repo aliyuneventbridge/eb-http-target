@@ -35,16 +35,16 @@ public class StringToSignBuilder {
     public static List<Header> officalHeaders(Map<String, String> headerMap) {
         List<Header> headers = new ArrayList<>();
         headers.add(new BasicHeader(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_TIMESTAMP,
-            headerMap.get(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_TIMESTAMP)));
-        headers.add(new BasicHeader(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_METHOD,
-            headerMap.get(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_METHOD)));
+                headerMap.get(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_TIMESTAMP)));
+        headers.add(new BasicHeader(EBConstants.HEADER_X_EVENTBRIDGE_HASH_METHOD,
+                headerMap.get(EBConstants.HEADER_X_EVENTBRIDGE_HASH_METHOD)));
         headers.add(new BasicHeader(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_VERSION,
-            headerMap.get(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_VERSION)));
+                headerMap.get(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_VERSION)));
         headers.add(new BasicHeader(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_URL,
-            headerMap.get(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_URL)));
+                headerMap.get(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_URL)));
         if (!Strings.isNotBlank(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_TOKEN)) {
             headers.add(new BasicHeader(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_TOKEN,
-                headerMap.get(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_TOKEN)));
+                    headerMap.get(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_TOKEN)));
         }
         return headers;
     }
