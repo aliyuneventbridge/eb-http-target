@@ -2,7 +2,6 @@ package com.aliyuneventbridge.httptarget.siginature;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -29,49 +28,11 @@ public class StringToSignBuilder {
     }
 
     /**
-     * Build the string to be signed.
-     *
-     * @param urlWithQueryString
-     * @param headerMap
-     * @param body
-     *
-     * @return
-     *
-     * @see <a href="https://yuque.antfin-inc.com/aone709911/lb5o1x/pklssa">HTTP/S 事件签名</a>
-     */
-
-    public static String defaultStringToSignV2(String urlWithQueryString, Map<String, String> headerMap, byte[] body) {
-        return buildStringToSign(urlWithQueryString, officalHeadersV2(headerMap), body);
-    }
-
-    /**
      * Build office headers
      *
      * @return
      */
     public static List<Header> officalHeaders(Map<String, String> headerMap) {
-        List<Header> headers = new ArrayList<>();
-        headers.add(new BasicHeader(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_TIMESTAMP,
-            headerMap.get(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_TIMESTAMP)));
-        headers.add(new BasicHeader(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_METHOD,
-            headerMap.get(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_METHOD)));
-        headers.add(new BasicHeader(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_VERSION,
-            headerMap.get(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_VERSION)));
-        headers.add(new BasicHeader(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_URL,
-            headerMap.get(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_URL)));
-        if (!Strings.isNotBlank(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_TOKEN)) {
-            headers.add(new BasicHeader(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_TOKEN,
-                headerMap.get(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_TOKEN)));
-        }
-        return headers;
-    }
-
-    /**
-     * Build office headers
-     *
-     * @return
-     */
-    public static List<Header> officalHeadersV2(Map<String, String> headerMap) {
         List<Header> headers = new ArrayList<>();
         headers.add(new BasicHeader(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_TIMESTAMP,
                 headerMap.get(EBConstants.HEADER_X_EVENTBRIDGE_SIGNATURE_TIMESTAMP)));

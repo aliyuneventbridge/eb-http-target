@@ -39,7 +39,7 @@ public class SignatureVerify {
         String sign = headerMap.get(HEADER_X_EVENTBRIDGE_SIGNATURE_V2);
 
         PublicKey publicKey = PublicKeyBuilder.buildPublicKey(headerMap.get(HEADER_X_EVENTBRIDGE_SIGNATURE_URL));
-        String stringToSign = StringToSignBuilder.defaultStringToSignV2(urlWithQueryString, headerMap, body);
+        String stringToSign = StringToSignBuilder.defaultStringToSign(urlWithQueryString, headerMap, body);
         return verifySignatureBySHA256withRSA(stringToSign, publicKey, sign);
     }
 
